@@ -32,24 +32,44 @@ const data = [
 ];
 
 class Dashboard extends Component {
+  
   state = {
     Loading: false
   };
+  // function to take an id and set the state of focused to the value of id.
+  selectPanel(id) {
+    this.setState(previousState => ({
+      focused: previousState.focused !== null ? null : id
+    }));
+  }
 
   render() {
-    const dashboardClasses = classnames("dashboard");
+    // conditionally apply a CSS class to the Dashboard root element. It is the dashboard--focused class.
+    const dashboardClasses = classnames("dashboard", {
+      "dashboard--focused": this.state.focused
+     });
     // show Loading component when the state is loading
     if (this.state.Loading){
       return <Loading />
     }
+
     // Map over the data array and create a new Panel for each of the four data objects
-    const panels = data.map(panel => (
-      <Panel
+        // Use the this.state.focused value to filter panel data before converting it to components.
+
+    const panels = data
+    .filter(
+      panel => this.state.focused === null || this.state.focused === panel.id
+    )
+    .map(panel => (
+    <Panel
       key={panel.id}
-      id={panel.id}
+      id={panel.label}
       label={panel.label}
       value={panel.value}
-      />
+      // pass our action from the Dashboard component to each Panel component as a prop.
+      onSelect={event => this.selectPanel(panel.id)}
+
+    />
     ));
     // Render the panels array as children of the main element.
     return <main className={dashboardClasses} >{panels}</main>;
