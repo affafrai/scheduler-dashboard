@@ -6,6 +6,7 @@ import Loading from "components/Loading";
 
 import Panel from "components/Panel";
 
+
 // fake data
 const data = [
   {
@@ -41,8 +42,17 @@ class Dashboard extends Component {
     if (this.state.Loading){
       return <Loading />
     }
-
-    return <main className={dashboardClasses} />;
+    // Map over the data array and create a new Panel for each of the four data objects
+    const panels = data.map(panel => (
+      <Panel
+      key={panel.id}
+      id={panel.id}
+      label={panel.label}
+      value={panel.value}
+      />
+    ));
+    // Render the panels array as children of the main element.
+    return <main className={dashboardClasses} >{panels}</main>;
   }
 }
 
